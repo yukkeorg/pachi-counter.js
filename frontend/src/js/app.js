@@ -4,27 +4,20 @@ import '../scss/style.scss';
 
 import AnimationCounter from './animationcounter.js';
 import $ from './selector.js';
-import {Draggable} from '@shopify/draggable';
-
-
-class DraggableElement {
-  constructor(element, draggable_options={}) {
-    this.element = element;
-    this.dragable = new Draggable(element, draggable_options);
-  }
-}
 
 // Elements
-const p_counter = new DraggableElement($('#pcounter'));
 const p_title = $('#pcount_title');
 const p_total = $('#pcount_total');
 const p_current = $('#pcount_current');
 const p_bonus = $('#pcount_bonus');
 const p_bonus_chain = $('#pcount_bonus_chain');
-const p_points = new AnimationCounter($('#pcount_points'), 500, 20);
+
+new AnimationCounter($('#pcount_points'), 500, 20);
 
 // Web socket
-const ws = new WebSocket('ws://localhost:18888');
+const ws = new WebSocket(`ws://${window.location.host}`);
+
+ws.addEventListener('open', () => {});
 
 ws.addEventListener('message', (message) => {
   console.log("recieved:" + message);

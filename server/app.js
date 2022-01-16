@@ -1,7 +1,8 @@
 'use strict';
 
-const util  = require('util');
+const util = require('util');
 const log4js = require('log4js');
+
 const config = require('./config');
 const Server = require('./server');
 const UsbIO2 = require('./usbio2');
@@ -31,13 +32,13 @@ class App {
     );
 
     server.setup({
-      get: {
+      'get': {
         '/export': (req, res) => {
           res.json(this.counter_data);
           res.sendStatus(200);
         }
       },
-      post: {
+      'post': {
         '/import': (req, res) => {
           Object.keys(req.body).forEach((key) => {
             if(key in this.counter_data) {
@@ -48,10 +49,10 @@ class App {
           res.sendStatus(200);
         },
       },
-      on_ws_connected: (ws) => {
+      'on_ws_connected': (ws) => {
         ws.send(JSON.stringify(this.counter_data));
       }
-    })
+    });
 
     const GAMECNT_PORT = config.port.game;
     const BONUS_PORT = config.port.bonus;

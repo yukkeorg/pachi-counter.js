@@ -14,14 +14,18 @@ class Server {
     this.public_dir = public_dir;
 
     this.app = null;
-    this.server = null;
-    this.wsServer = null;
+    this.wss = null;
   }
 
   setup(options) {
     this.app = express();
+    this.app.disable('x-powered-by');
+
     this.app.use(express.static(this.public_dir));
+    logger.info('Static file path: ' + this.public_dir);
+
     this.app.use(express.json());
+
     for(const method of ['get', 'post', 'put', 'delete']) {
       if(method in options) {
         const routes = options[method];
@@ -31,30 +35,28 @@ class Server {
       }
     }
 
-    this.httpServer = http.createServer(this.app);
-    this.httpServer.listen(this.port, () => {
-      logger.info(`Server is litening on port ${this.port}`);
-    });
-    logger.info('Static file path: ' + this.public_dir);
+    const server = http.createServer(this.app);
+    this.wss = new WebSocket.Server({ server: server });
+    if(options.on_ws_connected) {
+      this.wss.on('connection', (ws) => {
+          options.on_ws_connected(ws);
+          logger.info("websocket: Client Connected.");
+      });
+    }
 
-
-    this.wsServer = new WebSocket.Server({server: this.httpServer});
-    // Websocket request message
-    this.wsServer.on('connection', (ws, req) => {
-      if(options.on_ws_connected) {
-        options.on_ws_connected(ws);
-      }
-      logger.info("Client Connected");
+    server.listen(this.port, () => {
+      logger.info(`Server is listening on port ${this.port}`);
     });
   }
 
   sendTextToClients(data) {
-    this.wsServer.clients.forEach((client) => {
-      if(client !== this.wsServer &&
-         client.readyState === WebSocket.OPEN) {
-        client.send(data);
-      }
-    });
+    if(this.wss) {
+      this.wss.clients.forEach((client) => {
+        if(client !== this.wss && client.readyState === WebSocket.OPEN) {
+          client.send(data);
+        }
+      });
+    }
   }
 }
 
