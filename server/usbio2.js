@@ -47,13 +47,13 @@ class UsbIO2 extends EventEmmiter {
     });
     if(detected_devices.length > 0) {
       logger.info("USB-IO2.0 is detected.");
-      setTimeout(()=>this.setup(detected_devices[0].path), 1000);
+      setTimeout(() => this.setup(detected_devices[0].path), 1000);
     } else {
       setTimeout(this.detect.bind(this), 100);
     }
   }
 
-  setup(path=null) {
+  setup(path = null) {
     if(path != null) {
       this.device = new HID.HID(path);
       logger.debug("Device: " + util.inspect(this.device, null, 5));

@@ -1,29 +1,20 @@
 {
   "name": "pcounter.js",
-  "version": "0.2.0",
+  "version": "0.3.0",
   "description": "",
   "author": "yukke.org",
   "license": "MIT",
   "scripts": {
-    "start": "npm run build:frontend && npm run backend",
-    "build:frontend": "parcel build ./frontend/src/index.html --dist-dir public",
+    "start": "npm run backend",
     "backend": "node server/index.js"
   },
   "dependencies": {
-    "@shopify/draggable": "^1.0.0-beta.8",
     "config": "^3.3.7",
     "express": "^4.17.2",
     "log4js": "^6.3.0",
     "node-hid": "^2.1.1",
-    "websocket": "^1.0.34",
     "ws": "^8.4.2"
   },
   "devDependencies": {
-    "@parcel/transformer-sass": "^2.2.0",
-    "cross-env": "^7.0.3",
-    "eslint": "^8.7.0",
-    "parcel": "^2.2.0",
-    "sass": "^1.48.0"
-  },
-  "browserslist": "> 0.5%, last 2 versions, not dead"
+  }
 }
