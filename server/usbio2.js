@@ -1,3 +1,4 @@
+// @ts-nocheck
 'use strict';
 
 const util = require('util');
@@ -56,10 +57,13 @@ class UsbIO2 extends EventEmmiter {
   setup(path = null) {
     if(path != null) {
       this.device = new HID.HID(path);
-      logger.debug("Device: " + util.inspect(this.device, null, 5));
+      logger.debug("Device: " + util.inspect(this.device, false, 5));
     } else {
       // USB-IO2.0 = VendorID: 0x1352, ProductID:0x0120
-      this.device = new HID.HID(USBIO20_VENDORID, USBIO20_PRODUCTID);
+      this.device = new HID.HID(USBIO20_VENDORID, USBIO20_PRODUCTID_ORIG);
+    }
+    if(this.device === null) {
+      return;
     }
     this.device.on('data', this._on_data.bind(this));
     this.inspect_interval_id = setInterval(() => {
@@ -75,7 +79,9 @@ class UsbIO2 extends EventEmmiter {
     if(this.inspect_interval_id >= 0) {
       clearInterval(this.inspect_interval_id);
     }
-    this.device.close();
+    if(this.device) {
+      this.device.close();
+    }
   }
 
   _on_data(data) {
