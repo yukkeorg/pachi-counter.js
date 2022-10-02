@@ -22,6 +22,7 @@ class Server {
     this.app.disable('x-powered-by');
 
     this.app.use(express.static(this.public_dir));
+
     logger.info('Static file path: ' + this.public_dir);
 
     this.app.use(express.json());

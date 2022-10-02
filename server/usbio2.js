@@ -4,7 +4,6 @@
 const util = require('util');
 const EventEmmiter = require('events');
 const log4js = require('log4js');
-
 const HID = require('node-hid');
 
 const logger = log4js.getLogger();
@@ -85,9 +84,9 @@ class UsbIO2 extends EventEmmiter {
   }
 
   _on_data(data) {
-    // USB-IO2側の回路がプルアップしており、
-    // ON、OFFが読み取ったデータ上0, 1となっているため、
-    // 反転して、補正する。
+    // USB-IO2側の回路がプルアップしているため、
+    // スイッチのON、OFFはデータ上それぞれ0, 1となっているため、
+    // 反転して補正する。
     let now_data = (~((data[2] << 8) + data[1])) & 0x7f;
     logger.trace("raw_data:" + data[0].toString(16) + " " + data[1].toString(16) + " " + data[2].toString(16));
     logger.trace("now_data: " + now_data.toString(16));
